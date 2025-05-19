@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Title: Citron AppImage Build Linux Script
-# Description: Builds and runs the Arch Linux Podman container to create a Citron AppImage.
+# Title: Eden AppImage Build Linux Script
+# Description: Builds and runs the Arch Linux Podman container to create an Eden AppImage.
 
 set -e
 
@@ -13,22 +13,22 @@ if ! command -v podman &>/dev/null; then
 fi
 
 # Define image name
-IMAGE_NAME="localhost/citron-builder"
+IMAGE_NAME="localhost/eden-builder"
 
 # Ask user for version
 echo "========================================"
 echo "  Choose the version to build:"
 echo "  1. [Default] Latest master branch (nightly build)"
-echo "  2. Citron Canary Refresh Version 0.5"
-echo "  3. Citron Canary Refresh Version 0.4"
+echo "  2. Eden Canary Refresh Version 0.5"
+echo "  3. Eden Canary Refresh Version 0.4"
 echo "  4. Specific version (Tag, Branch name or Commit Hash)"
 echo "========================================"
 read -rp "Enter choice ([1]/2/3/4): " VERSION_CHOICE
 case "$VERSION_CHOICE" in
-    2) CITRON_VERSION="v0.5-canary-refresh" ;;
-    3) CITRON_VERSION="v0.4-canary-refresh" ;;
-    4) read -rp "Enter the version (Tag, Branch or Commit Hash): " CITRON_VERSION ;;
-    *) CITRON_VERSION="master" ;;
+    2) EDEN_VERSION="v0.5-canary-refresh" ;;
+    3) EDEN_VERSION="v0.4-canary-refresh" ;;
+    4) read -rp "Enter the version (Tag, Branch or Commit Hash): " EDEN_VERSION ;;
+    *) EDEN_VERSION="master" ;;
 esac
 
 # Ask user for build mode
@@ -41,10 +41,10 @@ echo "  4. Debug mode"
 echo "========================================"
 read -rp "Enter choice ([1]/2/3/4): " BUILD_MODE_CHOICE
 case "$BUILD_MODE_CHOICE" in
-    2) CITRON_BUILD_MODE="release" ;;
-    3) CITRON_BUILD_MODE="compatibility" ;;
-    4) CITRON_BUILD_MODE="debug" ;;
-    *) CITRON_BUILD_MODE="steamdeck" ;;
+    2) EDEN_BUILD_MODE="release" ;;
+    3) EDEN_BUILD_MODE="compatibility" ;;
+    4) EDEN_BUILD_MODE="debug" ;;
+    *) EDEN_BUILD_MODE="steamdeck" ;;
 esac
 
 # Ask user if they want to cache the Git repository
@@ -74,8 +74,8 @@ podman build -t "$IMAGE_NAME" .
 # Run the container with selected options
 echo "Running the build container..."
 podman run --rm \
-    -e CITRON_VERSION="$CITRON_VERSION" \
-    -e CITRON_BUILD_MODE="$CITRON_BUILD_MODE" \
+    -e EDEN_VERSION="$EDEN_VERSION" \
+    -e EDEN_BUILD_MODE="$EDEN_BUILD_MODE" \
     -e OUTPUT_LINUX_BINARIES="$OUTPUT_LINUX_BINARIES" \
     -e USE_CACHE="$USE_CACHE" \
     -v "$(pwd)":/output \
@@ -92,13 +92,13 @@ if [[ -z "$DELETE_IMAGE" || "$DELETE_IMAGE" =~ ^[Yy]$ ]]; then
 fi
 
 # Ask the user if they want to delete the cached repository
-if [[ -f citron.tar.zst ]]; then
+if [[ -f eden.tar.zst ]]; then
     echo "========================================"
-    echo "  Do you want to delete the cached repository file citron.tar.zst? (y/[N])"
+    echo "  Do you want to delete the cached repository file eden.tar.zst? (y/[N])"
     echo "========================================"
     read -rp "Enter choice: " DELETE_CACHE
     if [[ "$DELETE_CACHE" =~ ^[Yy]$ ]]; then
         echo "Deleting cached repository..."
-        rm -f citron.tar.zst
+        rm -f eden.tar.zst
     fi
 fi

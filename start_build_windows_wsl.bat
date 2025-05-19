@@ -1,6 +1,6 @@
 @echo off
-:: Title: Citron AppImage Build Windows Script
-:: Description: Builds and runs the Arch Linux docker container to create a Citron AppImage.
+:: Title: Eden AppImage Build Windows Script
+:: Description: Builds and runs the Arch Linux docker container to create an Eden AppImage.
 
 :: Check if Docker is installed
 echo Checking for Docker installation...
@@ -33,22 +33,22 @@ if %ERRORLEVEL% NEQ 0 (
 echo ========================================================
 echo   Choose the version to build:
 echo   1. [Default] Latest master branch (nightly build)
-echo   2. Citron Canary Refresh Version 0.5
-echo   3. Citron Canary Refresh Version 0.4
+echo   2. Eden Canary Refresh Version 0.5
+echo   3. Eden Canary Refresh Version 0.4
 echo   4. Specific version (Tag, Branch name or Commit Hash)
 echo ========================================================
 set /p VERSION_CHOICE="Enter choice ([1]/2/3/4): "
 if "%VERSION_CHOICE%"=="1" (
-    set CITRON_VERSION=master
+    set EDEN_VERSION=master
 ) else if "%VERSION_CHOICE%"=="2" (
-    set CITRON_VERSION=v0.5-canary-refresh
+    set EDEN_VERSION=v0.5-canary-refresh
 ) else if "%VERSION_CHOICE%"=="3" (
-    set CITRON_VERSION=v0.4-canary-refresh
+    set EDEN_VERSION=v0.4-canary-refresh
 ) else if "%VERSION_CHOICE%"=="4" (
-    set /p CITRON_VERSION="Enter the version (Tag, Branch or Commit Hash): "
+    set /p EDEN_VERSION="Enter the version (Tag, Branch or Commit Hash): "
 ) else (
     echo Defaulting to latest master branch.
-    set CITRON_VERSION=master
+    set EDEN_VERSION=master
 )
 
 :: Ask user for build mode
@@ -61,17 +61,17 @@ echo   4. Debug mode
 echo ========================================================
 set /p BUILD_MODE_CHOICE="Enter choice ([1]/2/3/4): "
 if "%BUILD_MODE_CHOICE%"=="1" (
-    set CITRON_BUILD_MODE=steamdeck
+    set EDEN_BUILD_MODE=steamdeck
     echo Defaulting to SteamDeck optimizations.
 ) else if "%BUILD_MODE_CHOICE%"=="2" (
-    set CITRON_BUILD_MODE=release
+    set EDEN_BUILD_MODE=release
 ) else if "%BUILD_MODE_CHOICE%"=="3" (
-    set CITRON_BUILD_MODE=compatibility
+    set EDEN_BUILD_MODE=compatibility
 ) else if "%BUILD_MODE_CHOICE%"=="4" (
-    set CITRON_BUILD_MODE=debug
+    set EDEN_BUILD_MODE=debug
 ) else (
     echo Defaulting to SteamDeck optimizations.
-    set CITRON_BUILD_MODE=steamdeck
+    set EDEN_BUILD_MODE=steamdeck
 )
 
 :: Ask user if they want to cache the Git repository for subsequent builds
@@ -105,15 +105,15 @@ if "%OUTPUT_BINARIES%"=="1" (
 )
 
 :: Build the new image
-docker build -t citron-builder .
+docker build -t eden-builder .
 
 :: Build the container with the selected options
-docker run --rm -e CITRON_VERSION=%CITRON_VERSION% -e CITRON_BUILD_MODE=%CITRON_BUILD_MODE% -e OUTPUT_LINUX_BINARIES=%OUTPUT_LINUX_BINARIES% -e USE_CACHE=%USE_CACHE% -v %CD%:/output citron-builder
+docker run --rm -e EDEN_VERSION=%EDEN_VERSION% -e EDEN_BUILD_MODE=%EDEN_BUILD_MODE% -e OUTPUT_LINUX_BINARIES=%OUTPUT_LINUX_BINARIES% -e USE_CACHE=%USE_CACHE% -v %CD%:/output eden-builder
 
 :: Ask the user if they want to delete the Docker image to save disk space (default to Yes)
 echo.
 echo ==================================================
-echo   Do you want to remove the citron-builder image  
+echo   Do you want to remove the eden-builder image  
 echo   to save disk space? ^(Y/n^)                     
 echo ==================================================
 echo.
@@ -123,25 +123,25 @@ if /I "%DELETE_IMAGE%"=="" set DELETE_IMAGE=Y
 if /I "%DELETE_IMAGE%"=="Y" ( 
     echo.
     echo ================================
-    echo   Removing citron-builder image  
+    echo   Removing eden-builder image  
     echo ================================
     echo.
-    docker rmi -f citron-builder
-    echo citron-builder image removed.
+    docker rmi -f eden-builder
+    echo eden-builder image removed.
 ) else (
     echo.
     echo ================================
-    echo   citron-builder image kept  
+    echo   eden-builder image kept  
     echo ================================
     echo.
 )
 
 :: Ask the user if they want to delete the cached Git repository
-if exist citron.tar.zst (
+if exist eden.tar.zst (
     echo.
     echo ==================================================
     echo   Do you want to delete the cached repository 
-    echo   file citron.tar.zst to free up space? ^(y/N^)
+    echo   file eden.tar.zst to free up space? ^(y/N^)
     echo ==================================================
     echo.
     set /p DELETE_CACHE="Enter choice: "
@@ -152,8 +152,8 @@ if exist citron.tar.zst (
         echo ================================
         echo   Deleting cached repository...  
         echo ================================
-        del /Q citron.tar.zst
-        echo citron.tar.zst deleted.
+        del /Q eden.tar.zst
+        echo eden.tar.zst deleted.
     ) else (
         echo.
         echo ================================

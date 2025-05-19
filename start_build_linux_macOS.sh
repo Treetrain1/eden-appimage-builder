@@ -1,6 +1,6 @@
 #!/bin/bash
-# Title: Citron AppImage Build Script (Linux & macOS)
-# Description: Builds and runs the Arch Linux Docker container to create a Citron AppImage.
+# Title: Eden AppImage Build Script (Linux & macOS)
+# Description: Builds and runs the Arch Linux Docker container to create an Eden AppImage.
 
 set -e  # Exit on any error
 
@@ -27,16 +27,16 @@ fi
 echo "========================================================"
 echo "  Choose the version to build:"
 echo "  1. [Default] Latest master branch (nightly build)"
-echo "  2. Citron Canary Refresh Version 0.5"
-echo "  3. Citron Canary Refresh Version 0.4"
+echo "  2. Eden Canary Refresh Version 0.5"
+echo "  3. Eden Canary Refresh Version 0.4"
 echo "  4. Specific version (Tag, Branch name or Commit Hash)"
 echo "========================================================"
 read -p "Enter choice ([1]/2/3/4): " VERSION_CHOICE
 case "$VERSION_CHOICE" in
-    2) CITRON_VERSION="v0.5-canary-refresh" ;;
-    3) CITRON_VERSION="v0.4-canary-refresh" ;;
-    4) read -p "Enter the version (Tag, Branch or Commit Hash): " CITRON_VERSION ;;
-    *) CITRON_VERSION="master" ;;
+    2) EDEN_VERSION="v0.5-canary-refresh" ;;
+    3) EDEN_VERSION="v0.4-canary-refresh" ;;
+    4) read -p "Enter the version (Tag, Branch or Commit Hash): " EDEN_VERSION ;;
+    *) EDEN_VERSION="master" ;;
 esac
 
 # Ask user for build mode
@@ -49,10 +49,10 @@ echo "  4. Debug mode"
 echo "========================================================"
 read -p "Enter choice ([1]/2/3/4): " BUILD_MODE_CHOICE
 case "$BUILD_MODE_CHOICE" in
-    2) CITRON_BUILD_MODE="release" ;;
-    3) CITRON_BUILD_MODE="compatibility" ;;
-    4) CITRON_BUILD_MODE="debug" ;;
-    *) CITRON_BUILD_MODE="steamdeck" ;;
+    2) EDEN_BUILD_MODE="release" ;;
+    3) EDEN_BUILD_MODE="compatibility" ;;
+    4) EDEN_BUILD_MODE="debug" ;;
+    *) EDEN_BUILD_MODE="steamdeck" ;;
 esac
 
 # Ask user if they want to cache the Git repository
@@ -97,54 +97,54 @@ if [ "$ARCH" = "arm64" ]; then
         fi
     fi
 
-    echo "Building Citron AppImage for ARM64..."
+    echo "Building Eden AppImage for ARM64..."
 
     # Build the new image for ARM64
-    docker build --platform=linux/amd64 -t citron-builder .
+    docker build --platform=linux/amd64 -t eden-builder .
 
     # Run the container with the selected options
     docker run --platform=linux/amd64 --rm \
-        -e CITRON_VERSION=$CITRON_VERSION \
-        -e CITRON_BUILD_MODE=$CITRON_BUILD_MODE \
+        -e EDEN_VERSION=$EDEN_VERSION \
+        -e EDEN_BUILD_MODE=$EDEN_BUILD_MODE \
         -e OUTPUT_LINUX_BINARIES=$OUTPUT_LINUX_BINARIES \
         -e USE_CACHE=$USE_CACHE \
         -v "$(pwd)":/output \
-        citron-builder
+        eden-builder
 
 else
     # Build the new image
-    docker build -t citron-builder .
+    docker build -t eden-builder .
 
     # Run the container with the selected options
     docker run --rm \
-        -e CITRON_VERSION=$CITRON_VERSION \
-        -e CITRON_BUILD_MODE=$CITRON_BUILD_MODE \
+        -e EDEN_VERSION=$EDEN_VERSION \
+        -e EDEN_BUILD_MODE=$EDEN_BUILD_MODE \
         -e OUTPUT_LINUX_BINARIES=$OUTPUT_LINUX_BINARIES \
         -e USE_CACHE=$USE_CACHE \
         -v "$(pwd)":/output \
-        citron-builder
+        eden-builder
 fi
 
 # Ask user if they want to remove the Docker image
 echo "========================================================"
-echo "  Do you want to remove the citron-builder image "
+echo "  Do you want to remove the eden-builder image "
 echo "  to save disk space? ([Y]/n)"
 echo "========================================================"
 read -p "Enter choice: " DELETE_IMAGE
 if [[ -z "$DELETE_IMAGE" || "$DELETE_IMAGE" =~ ^[Yy]$ ]]; then
-    echo "Removing citron-builder image..."
-    docker rmi -f citron-builder
+    echo "Removing eden-builder image..."
+    docker rmi -f eden-builder
 fi
 
 # Ask user if they want to delete the cached Git repository
-if [ -f citron.tar.zst ]; then
+if [ -f eden.tar.zst ]; then
     echo "========================================================"
     echo "  Do you want to delete the cached repository "
-    echo "  file citron.tar.zst to free up space? (y/[N])"
+    echo "  file eden.tar.zst to free up space? (y/[N])"
     echo "========================================================"
     read -p "Enter choice: " DELETE_CACHE
     if [[ "$DELETE_CACHE" =~ ^[Yy]$ ]]; then
         echo "Deleting cached repository..."
-        rm -f citron.tar.zst
+        rm -f eden.tar.zst
     fi
 fi
