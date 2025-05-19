@@ -10,14 +10,14 @@ RUN pacman -Syu --needed --noconfirm base-devel boost catch2 cmake ffmpeg fmt gi
 WORKDIR /root
 
 # Copy the build script
-COPY build-citron.sh /root/build-citron.sh
-RUN chmod +x /root/build-citron.sh
+COPY build-eden.sh /root/build-eden.sh
+RUN chmod +x /root/build-eden.sh
 
 # Convert any CRLF line endings to just LF
-RUN dos2unix /root/build-citron.sh
+RUN dos2unix /root/build-eden.sh
 
 # Set output directory as a volume
 VOLUME ["/output"]
 
 # Set default entrypoint
-ENTRYPOINT ["/root/build-citron.sh"]
+ENTRYPOINT ["/root/build-eden.sh"]
