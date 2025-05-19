@@ -54,7 +54,7 @@ BUILD_TYPE=${BUILD_TYPE:-Release}  # Default to Release mode
 echo "🛠️ Building Citron (Version: ${CITRON_VERSION}, Mode: ${CITRON_BUILD_MODE}, Build: ${BUILD_TYPE})"
 
 # Check if CITRON_VERSION exists on the remote repository
-CITRON_REPO="https://git.citron-emu.org/Citron/Citron.git"
+CITRON_REPO="https://git.eden-emu.dev/eden-emu/eden.git"
 
 # Check if CITRON_VERSION is a commit hash
 if [[ "${CITRON_VERSION}" =~ ^[0-9a-f]{7,40}$ ]]; then
@@ -173,10 +173,10 @@ mkdir -p ${WORKING_DIR}/Citron/build
 cd ${WORKING_DIR}/Citron/build
 
 cmake .. -GNinja \
-  -DCITRON_ENABLE_LTO=ON \
-  -DCITRON_USE_BUNDLED_VCPKG=ON \
-  -DCITRON_TESTS=OFF \
-  -DCITRON_USE_LLVM_DEMANGLE=OFF \
+  -DYUZU_ENABLE_LTO=ON \
+  -DYUZU_USE_BUNDLED_VCPKG=ON \
+  -DYUZU_TESTS=OFF \
+  -DYUZU_USE_LLVM_DEMANGLE=OFF \
   -DCMAKE_INSTALL_PREFIX=/usr \
   -DCMAKE_CXX_FLAGS="$CXX_FLAGS" \
   -DCMAKE_C_FLAGS="$C_FLAGS" \
