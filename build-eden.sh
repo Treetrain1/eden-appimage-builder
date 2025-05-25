@@ -203,20 +203,20 @@ fi
 
 # Build the AppImage
 cd ${WORKING_DIR}/Eden
-${WORKING_DIR}/Eden/appimage-builder.sh eden ${WORKING_DIR}/Eden/build
+${WORKING_DIR}/Eden/.ci/linux/package.sh
 
 # Prepare AppImage deployment
-cd ${WORKING_DIR}/Eden/build/deploy-linux
-cp /usr/lib/libSDL3.so* ${WORKING_DIR}/Eden/build/deploy-linux/AppDir/usr/lib/
-wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
-chmod +x appimagetool-x86_64.AppImage
+#cd ${WORKING_DIR}/Eden/build/deploy-linux
+#cp /usr/lib/libSDL3.so* ${WORKING_DIR}/Eden/build/deploy-linux/AppDir/usr/lib/
+#wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+#chmod +x appimagetool-x86_64.AppImage
 # Workaround for lack of FUSE support in WSL
-./appimagetool-x86_64.AppImage --appimage-extract
-chmod +x ./squashfs-root/AppRun
-./squashfs-root/AppRun AppDir
+#./appimagetool-x86_64.AppImage --appimage-extract
+#chmod +x ./squashfs-root/AppRun
+#./squashfs-root/AppRun AppDir
 
 # Move the most recently created AppImage to a fresh output folder
-APPIMAGE_PATH=$(ls -t ${WORKING_DIR}/Eden/build/deploy-linux/*.AppImage 2>/dev/null | head -n 1)
+APPIMAGE_PATH=$(ls -t ${WORKING_DIR}/Eden/*.AppImage 2>/dev/null | head -n 1)
 
 if [[ -n "$APPIMAGE_PATH" ]]; then
     mv -f "$APPIMAGE_PATH" "${OUTPUT_DIR}/${OUTPUT_NAME}.AppImage"
