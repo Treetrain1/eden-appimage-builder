@@ -5,7 +5,7 @@ FROM archlinux:latest
 RUN pacman -Syu --needed --noconfirm base-devel boost catch2 cmake ffmpeg fmt git glslang libzip lz4 \
     mbedtls ninja nlohmann-json openssl opus qt5 sdl2 zlib zstd zip unzip qt6-base qt6-tools qt6-svg \
     qt6-declarative qt6-webengine sdl3 qt6-multimedia clang qt6-wayland fuse2 rapidjson wget sdl3 dos2unix \
-    xorg-server-xvfb patchelf strace zsync
+    python python-jinja yasm xorg-server-xvfb patchelf strace zsync
 
 # Set working directory
 WORKDIR /root
